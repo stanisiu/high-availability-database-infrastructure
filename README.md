@@ -219,7 +219,7 @@ The test validates:
 
 Detailed test procedures are documented in:
 
-* [`failover-test.md`](docs/failover-test.md)
+* [`failure-recovery-test.md`](docs/failure-recovery-test.md)
 * [`replication-test.md`](docs/replication-test.md)
 
 ---
