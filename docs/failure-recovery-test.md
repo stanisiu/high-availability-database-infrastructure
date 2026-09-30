@@ -1,4 +1,4 @@
-# Failover Scenario Test
+# Database Failure and Recovery Test
 
 ## Overview
 
