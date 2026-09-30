@@ -1,17 +1,26 @@
-# HA Database Infrastructure
+# High-Availability Database Infrastructure
 
-High Availability Database Infrastructure project built with MariaDB replication, Prometheus monitoring, and Grafana alerting.
+A hands-on infrastructure lab for designing and validating a high-availability-oriented MariaDB environment using primary-replica replication, infrastructure monitoring, automated backups, health checks, and failure recovery testing.
 
-This lab environment simulates a small-scale enterprise infrastructure with monitoring, backup automation, failover testing, and internal virtual network configuration using VMware.
+## Key Objectives
+
+* Build and configure a MariaDB primary-replica architecture
+* Monitor database and host health using Prometheus and Grafana
+* Implement automated database backups using Bash and cron
+* Develop replication health checks for operational validation
+* Simulate infrastructure failures and validate recovery behavior
+* Document deployment, monitoring, testing, and troubleshooting procedures
 
 ---
 
 # Architecture
 
-- Router (NAT / Internal Routing)
-- DB Master Server (Write Node)
-- DB Slave Server (Read Replica)
-- Monitoring Server (Prometheus & Grafana)
+The environment consists of dedicated database and monitoring servers connected through an internal VMware network.
+
+* **Router** — NAT and internal network routing
+* **Primary Database Server** — MariaDB write node
+* **Replica Database Server** — MariaDB read replica
+* **Monitoring Server** — Prometheus and Grafana
 
 ## Architecture Diagram
 
@@ -21,31 +30,34 @@ This lab environment simulates a small-scale enterprise infrastructure with moni
 
 # Features
 
-- MariaDB Master-Slave Replication
-- Prometheus Infrastructure Monitoring
-- Grafana Dashboard Visualization
-- Grafana Alert Rule Management
-- Automated Database Backup
-- Cron-based Backup Scheduling
-- Replication Health Check Script
-- Infrastructure Failover Testing
-- Internal Network Configuration using VMware
-- Infrastructure Automation with Shell Scripts
+* MariaDB primary-replica replication
+* Replication synchronization and health validation
+* Prometheus-based infrastructure monitoring
+* Grafana dashboard visualization
+* Grafana alert rule configuration
+* Automated MariaDB database backups
+* Cron-based backup scheduling
+* Replication health check automation
+* Infrastructure failure and recovery testing
+* VMware-based internal network configuration
+* Bash-based operational automation
 
 ---
 
-# Monitoring Dashboard
+# Monitoring and Observability
 
-Prometheus and Grafana were integrated to provide real-time infrastructure monitoring and alerting.
+Prometheus and Grafana were integrated to provide infrastructure visibility and alerting.
 
 ## Monitoring Metrics
 
-- CPU Usage
-- Memory Usage
-- Disk Usage
-- Network Traffic
-- Database Server Availability
-- Infrastructure Health Status
+The monitoring environment tracks infrastructure-level metrics including:
+
+* CPU utilization
+* Memory utilization
+* Disk utilization
+* Network traffic
+* Database server availability
+* Infrastructure health status
 
 ## Dashboard Preview
 
@@ -57,18 +69,19 @@ Prometheus and Grafana were integrated to provide real-time infrastructure monit
 
 ---
 
-# Replication Configuration
+# Database Replication
 
-MariaDB replication was configured between the master and slave database servers.
+MariaDB primary-replica replication was configured to provide database redundancy and validate replication behavior during infrastructure failures.
 
-## Replication Status
+## Replication Configuration
 
-- Master-Slave replication configured successfully
-- Real-time synchronization verified
-- Internal network communication confirmed
-- Replication health monitoring implemented
+* MariaDB Primary configured as the write node
+* MariaDB Replica configured as the replication node
+* Internal network connectivity validated
+* Replication synchronization verified
+* Replication health monitored through custom scripts
 
-## Replication Healthy State
+## Healthy Replication State
 
 ![Replication Normal](docs/screenshots/replication-normal.png)
 
@@ -78,23 +91,19 @@ MariaDB replication was configured between the master and slave database servers
 
 ---
 
-# Infrastructure Alerting
+# Failure Detection and Alerting
 
-Grafana alert rules were configured to detect infrastructure failures automatically.
+Grafana alert rules were configured to detect infrastructure-level failures when a monitored node becomes unavailable.
 
 ## Alert Scenario
 
-The monitoring system detects server failure when the monitored node becomes unavailable.
+The following scenario was used to validate failure detection and alert recovery:
 
-### Alert Workflow
-
-1. Stop Node Exporter service on db-master
-2. Prometheus detects unavailable target
-3. Grafana alert enters Pending state
-4. Alert transitions to Firing state
-5. Service recovery restores Normal state
-
----
+1. Stop the Node Exporter service on the Primary database server
+2. Prometheus detects the monitored target as unavailable
+3. Grafana alert enters the `Pending` state
+4. The alert transitions to the `Firing` state
+5. Restoring the service returns the alert to the `Normal` state
 
 ## Alert Firing State
 
@@ -112,48 +121,83 @@ The monitoring system detects server failure when the monitored node becomes una
 
 # Infrastructure Automation
 
-## Automated Backup
+Operational tasks were automated using Bash shell scripts and cron.
 
-Database backup automation was implemented using Bash shell scripts and cron scheduling.
+## Automated Database Backup
 
-### Backup Features
+A scheduled MariaDB backup process was implemented using Bash and cron.
 
-- Automated MariaDB backup
-- Cron-based scheduled execution
-- Backup verification testing
-- Script-based infrastructure management
+### Backup Capabilities
+
+* Automated MariaDB database dumps
+* Cron-based scheduled execution
+* Backup verification testing
+* Script-based operational management
+
+Detailed procedures are documented in:
+
+* [`backup-automation.md`](docs/backup-automation.md)
+* [`backup-restore.md`](docs/backup-restore.md)
+* [`cron-backup.md`](docs/cron-backup.md)
 
 ---
 
-## Replication Health Check Script
+## Replication Health Check
 
-A custom health check script was created to verify replication status automatically.
+A custom health check script was implemented to validate the operational state of MariaDB replication.
 
-### Health Check Features
+### Health Check Capabilities
 
-- Slave_IO_Running verification
-- Slave_SQL_Running verification
-- Replication state monitoring
-- Infrastructure validation support
+* `Slave_IO_Running` status verification
+* `Slave_SQL_Running` status verification
+* Replication state validation
+* Operational health checking
+
+The health check is used to identify replication issues and support infrastructure validation.
+
+---
+
+# Failure and Recovery Testing
+
+Controlled failure scenarios were performed to validate the behavior of the database and monitoring environment.
+
+## Replication Recovery Test
+
+The Primary database service was intentionally interrupted to observe replication behavior and verify recovery after service restoration.
+
+The test validates:
+
+* Replication connection loss detection
+* Database service recovery
+* Replication reconnection
+* Replica synchronization after recovery
+
+> **Note:** This project validates replication recovery rather than implementing automatic Replica promotion or fully automated database failover.
+
+Detailed test procedures are documented in:
+
+* [`failover-test.md`](docs/failover-test.md)
+* [`replication-test.md`](docs/replication-test.md)
 
 ---
 
 # Technologies
 
-- Ubuntu Server 24.04
-- MariaDB
-- Prometheus
-- Grafana
-- VMware Workstation
-- Bash Shell Scripting
-- Linux Networking
+| Category         | Technologies                             |
+| ---------------- | ---------------------------------------- |
+| Operating System | Ubuntu Server 24.04                      |
+| Database         | MariaDB                                  |
+| Monitoring       | Prometheus, Grafana                      |
+| Virtualization   | VMware Workstation                       |
+| Automation       | Bash, Cron                               |
+| Networking       | Linux Networking, VMware Virtual Network |
 
 ---
 
 # Project Structure
 
 ```text
-ha-database-infrastructure-lab/
+ha-database-infrastructure/
 ├── database/
 ├── docs/
 │   ├── screenshots/
@@ -175,6 +219,5 @@ ha-database-infrastructure-lab/
 │   ├── monitoring-setup.md
 │   ├── replication-test.md
 │   └── slave-setup.md
-├── monitoring/
-├── scripts/
-└── vmware/
+├── moni
+```
